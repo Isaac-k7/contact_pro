@@ -74,3 +74,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+
+# contacts_service plugin
+#
+#
+contacts_service: ^0.6.1
