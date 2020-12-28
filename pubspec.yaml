@@ -21,6 +21,9 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  flutter_contact: ^0.6.1
+  contacts_service: ^0.4.6
+  permission_handler: ^5.0.1
   flutter:
     sdk: flutter
 
@@ -35,6 +38,8 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+google_fonts: ^0.3.10
 
 # The following section is specific to Flutter.
 flutter:
@@ -74,9 +79,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
-
-# contacts_service plugin
-#
-#
-contacts_service: ^0.6.1
