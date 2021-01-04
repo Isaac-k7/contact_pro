@@ -222,6 +222,7 @@ class ContactsPage extends StatefulWidget {
 class _ContactsPageState extends State<ContactsPage> {
   Iterable<Contact> _contacts;
   Map<String, bool> countToValue = <String, bool>{};
+  bool value = false;
 
   @override
   void initState() {
@@ -251,10 +252,9 @@ class _ContactsPageState extends State<ContactsPage> {
                 return Card(
                     child: ListTile(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ContactDetails()));
+                    setState(() {
+                      this.value = value;
+                    });
                   },
                   leading: (contact.avatar != null && contact.avatar.isNotEmpty)
                       ? CircleAvatar(
@@ -265,13 +265,83 @@ class _ContactsPageState extends State<ContactsPage> {
                           backgroundColor: Theme.of(context).accentColor,
                         ),
                   title: Text(contact.displayName ?? ''),
-                  subtitle: Text(contact.prefix ?? ''),
-                  selected: countToValue[contact.identifier] ?? false,
+                  subtitle: Text(contact.phones.elementAt(0).value ?? ''),
                   trailing: Checkbox(
-                    value: countToValue[contact.identifier] ?? false,
+                    value: this.value ?? false,
+                    onChanged: (bool value) {},
+                  ),
+                  //This can be further expanded to showing contacts detail
+                  // onPressed().
+                ));
+              },
+            )
+          : Center(child: const CircularProgressIndicator()),
+    );
+    // Widget builSingleCheckbox(NotificationSettings notification) =>
+    //     buildChec²kbox();
+  }
+}
+
+class ContactUpdate extends StatefulWidget {
+  @override
+  _ContactUpState createState() => _ContactUpState();
+}
+
+class _ContactUpState extends State<ContactsPage> {
+  Iterable<Contact> _contactsUpdate;
+  Map<String, bool> countToValue = <String, bool>{};
+
+  @override
+  void initState() {
+    getContacts();
+    super.initState();
+  }
+
+  Future<void> getContacts() async {
+    //Make sure we already have permissions for contacts when we get to this
+    //page, so we can just retrieve it
+    final Iterable<Contact> contactsUpdate =
+        await ContactsService.getContacts();
+    setState(() {
+      _contactsUpdate = contactsUpdate;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _contactsUpdate != null
+          //Build a list view of all contacts, displaying their avatar and
+          // display name
+          ? ListView.builder(
+              itemCount: _contactsUpdate?.length ?? 0,
+              itemBuilder: (BuildContext context, int index) {
+                Contact contactsUpdate = _contactsUpdate?.elementAt(index);
+                return Card(
+                    child: ListTile(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ContactDetails()));
+                  },
+                  leading: (contactsUpdate.avatar != null &&
+                          contactsUpdate.avatar.isNotEmpty)
+                      ? CircleAvatar(
+                          backgroundImage: MemoryImage(contactsUpdate.avatar),
+                        )
+                      : CircleAvatar(
+                          child: Text(contactsUpdate.initials()),
+                          backgroundColor: Theme.of(context).accentColor,
+                        ),
+                  title: Text(contactsUpdate.displayName ?? ''),
+                  subtitle: Text(contactsUpdate.prefix ?? ''),
+                  selected: countToValue[contactsUpdate.identifier] ?? false,
+                  trailing: Checkbox(
+                    value: countToValue[contactsUpdate.identifier] ?? false,
                     onChanged: (bool value) {
                       setState(() {
-                        countToValue[contact.identifier] = value;
+                        countToValue[contactsUpdate.identifier] = value;
                       });
                     },
                   ),
